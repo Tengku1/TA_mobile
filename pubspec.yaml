@@ -1,0 +1,42 @@
+name: mobile_ta
+description: A new Flutter project.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_flavor: ^3.1.1
+  get: ^4.6.5
+  get_storage: ^2.1.1
+  http: ^1.0.0
+  flutter_dotenv: ^5.0.2
+  flutter_easyloading: ^3.0.5
+  overlay_support: ^2.1.0
+  flutter_geocoder: ^0.2.2-nullsafety
+  geolocator: ^9.0.2
+  intl: ^0.18.1
+  syncfusion_flutter_datepicker: ^21.2.6
+  crypto: ^3.0.3
+  geocoding: ^2.1.0
+  url_launcher: ^6.1.11
+  printing: ^5.11.0
+  banner_carousel: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/icons/
