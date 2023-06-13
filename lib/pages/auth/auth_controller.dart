@@ -30,17 +30,18 @@ class AuthController extends GetxController {
       if (usersData.isNotEmpty) {
         return Get.offAllNamed("/");
       }
-      final response = await http.post(url, body: jsonEncode(data));
+      final response = await http.post(url,
+          body: jsonEncode(data),
+          headers: {'Content-Type': 'application/json'});
 
-      final responseData = json.decode(response.body);
+      final responseData = jsonDecode(response.body);
       usersData.value = responseData;
       return Get.toNamed("/");
     } catch (e) {
-      print(e);
-      // return Get.to(() => const ErrorScreen(
-      //       headMessage: "$e.me",
-      //       message: "Server Dalam Masa Perbaikkan !",
-      //     ));
+      return Get.to(() => ErrorScreen(
+            headMessage: "Error",
+            message: "{$e.message}",
+          ));
     }
   }
 }

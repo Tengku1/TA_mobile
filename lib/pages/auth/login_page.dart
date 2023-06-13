@@ -32,7 +32,7 @@ class LoginPage extends StatelessWidget {
                                       style: TextStyle(fontSize: 30)),
                                   const SizedBox(height: 40),
                                   TextFormField(
-                                    controller: controller.usernameController,
+                                    controller: controller.emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: const InputDecoration(
                                         labelText: 'Email'),
