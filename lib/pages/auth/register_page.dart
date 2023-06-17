@@ -26,10 +26,25 @@ class RegisterPage extends StatelessWidget {
                                 style: TextStyle(fontSize: 30)),
                             const SizedBox(height: 40),
                             TextFormField(
-                              controller: controller.usernameController,
+                              controller: controller.nameController,
                               keyboardType: TextInputType.text,
                               decoration:
-                                  const InputDecoration(labelText: 'Username'),
+                                  const InputDecoration(labelText: 'Name'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  errorMessage.value =
+                                      'Kolom Tidak Boleh Kosong';
+                                  return 'Kolom Tidak Boleh Kosong';
+                                }
+                                errorMessage.value = "";
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: controller.surnameController,
+                              keyboardType: TextInputType.text,
+                              decoration:
+                                  const InputDecoration(labelText: 'Surname'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
@@ -61,10 +76,11 @@ class RegisterPage extends StatelessWidget {
                               },
                             ),
                             TextFormField(
-                              controller: controller.phoneController,
+                              controller: controller.pwdController,
+                              obscureText: true,
                               keyboardType: TextInputType.text,
-                              decoration: const InputDecoration(
-                                  labelText: 'Phone Number'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Password'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
@@ -76,10 +92,10 @@ class RegisterPage extends StatelessWidget {
                               },
                             ),
                             TextFormField(
-                              controller: controller.pwdController,
+                              controller: controller.phoneController,
                               keyboardType: TextInputType.text,
-                              decoration:
-                                  const InputDecoration(labelText: 'Password'),
+                              decoration: const InputDecoration(
+                                  labelText: 'Phone Number'),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
@@ -102,6 +118,7 @@ class RegisterPage extends StatelessWidget {
                                           errorMessage.value =
                                               "Isi Kolom Yang Dibutuhkan !";
                                         }
+                                        controller.register();
                                       },
                                       child: const Text('Submit'),
                                     ),
