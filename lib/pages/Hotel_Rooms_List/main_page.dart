@@ -5,8 +5,10 @@ import 'package:mobile_ta/utils/currency_format.dart';
 
 class HotelRoomsPage extends StatelessWidget {
   final List<dynamic> roomList;
+  final List<Map<String, dynamic>> bookData;
 
-  const HotelRoomsPage({super.key, required this.roomList});
+  const HotelRoomsPage(
+      {super.key, required this.roomList, required this.bookData});
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +75,8 @@ class HotelRoomsPage extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          Get.to(
-                              () => RoomDetailPage(room: hotel, image: images));
+                          Get.to(() => RoomDetailPage(
+                              room: hotel, image: images, bookData: bookData));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -135,12 +137,19 @@ class HotelRoomsPage extends StatelessWidget {
 class RoomDetailPage extends StatelessWidget {
   final dynamic room;
   final dynamic image;
+  final List<Map<String, dynamic>> bookData;
 
-  const RoomDetailPage({Key? key, required this.room, required this.image})
+  const RoomDetailPage(
+      {Key? key,
+      required this.room,
+      required this.image,
+      required this.bookData})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.put(HotelRoomController());
+    bookData[0].addAll({"roomName": room['name']});
+    bookData[0].addAll({"image": image});
+    final controller = Get.put(HotelRoomController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hotel Detail'),
@@ -171,7 +180,7 @@ class RoomDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Price : ${room['rates'][0]['net']} /night(s)',
+                    'Price : ${CurrencyFormat.convertToIdr(double.parse(room['rates'][0]['net']))} /night(s)',
                     style: const TextStyle(
                         fontSize: 12, fontWeight: FontWeight.bold),
                     maxLines: 6,
@@ -215,7 +224,7 @@ class RoomDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Amount : ${room['rates'][0]['cancellationPolicies'][0]['amount']}',
+                    'Amount : ${CurrencyFormat.convertToIdr(double.parse(room['rates'][0]['cancellationPolicies'][0]['amount']))}',
                     style: const TextStyle(fontSize: 12),
                     maxLines: 6,
                     overflow: TextOverflow.ellipsis,
@@ -229,6 +238,17 @@ class RoomDetailPage extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.justify,
                   ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Remarks',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Add some remarks ...',
+                      ),
+                      controller: controller.remarksController),
                 ],
               ),
             ),
@@ -238,7 +258,7 @@ class RoomDetailPage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Get.toNamed("/hotel-payment-methods");
+          controller.goToPaymentPage(room, bookData);
         },
         label: const Text('Book Now'),
       ),

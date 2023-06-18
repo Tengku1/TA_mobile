@@ -31,14 +31,15 @@ class AuthController extends GetxController {
     };
 
     try {
-      if (usersData.isNotEmpty) {
-        return Get.offAllNamed("/");
-      }
       final response = await http.post(url,
           body: jsonEncode(data),
           headers: {'Content-Type': 'application/json'});
 
       final responseData = jsonDecode(response.body);
+      if (responseData['statusCode'] == 400) {
+        Get.snackbar('Warning', 'Account Not Found');
+        return;
+      }
       usersData.value = responseData;
       return Get.toNamed("/");
     } catch (e) {

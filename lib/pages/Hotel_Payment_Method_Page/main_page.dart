@@ -1,11 +1,15 @@
 import 'package:mobile_ta/pages/Hotel_Payment_Method_Page/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_ta/utils/currency_format.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
   final paymentController = Get.put(PaymentController());
+  final controller = Get.put(PaymentController());
+  final List ids;
+  final dynamic room;
 
-  PaymentMethodsPage({super.key});
+  PaymentMethodsPage({super.key, required this.room, required this.ids});
 
   @override
   Widget build(BuildContext context) {
@@ -19,24 +23,24 @@ class PaymentMethodsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Card(
+            Card(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      '',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      '${room['name']}',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Text(
-                      'Bayar Sebelum - 04-06-2023',
-                      style: TextStyle(fontSize: 16),
+                      'Bayar Sebelum - ${room['rates'][0]['cancellationPolicies'][0]['from']}',
+                      style: const TextStyle(fontSize: 12),
                     ),
-                    SizedBox(height: 8.0),
-                    Text(
+                    const SizedBox(height: 8.0),
+                    const Text(
                       'Kode Pembayaran (BCA) : 014814957891305',
                       style: TextStyle(fontSize: 14),
                     ),
@@ -48,22 +52,44 @@ class PaymentMethodsPage extends StatelessWidget {
             Obx(() => Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          paymentController.selectedPaymentMethod.value,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              paymentController.selectedPaymentMethod.value,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                showPaymentMethodBottomSheet(context);
+                              },
+                              child: const Text(
+                                'Ganti',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            showPaymentMethodBottomSheet(context);
-                          },
-                          child: const Text(
-                            'Ganti',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                controller.cancelBook(ids[0]);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
+                              child: const Text(
+                                'Batalkan',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -74,19 +100,20 @@ class PaymentMethodsPage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Get.to(const PaymentCompletedPage());
+          controller.confirmBook(ids);
         },
         label: const Text('Saya Sudah Bayar'),
       ),
-      bottomNavigationBar: const BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Total : IDR 350.000',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                'Total : ${CurrencyFormat.convertToIdr(double.parse(room['rates'][0]['net']))}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ],

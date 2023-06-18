@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobile_ta/pages/Search_Availability_Page/main_controller.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
+import 'package:range_slider_flutter/range_slider_flutter.dart';
 
 class SearchAvailabilityPage extends StatelessWidget {
   final controller = Get.put(SearchAvailabilityController());
@@ -58,6 +58,7 @@ class SearchAvailabilityPage extends StatelessWidget {
     final location =
         '${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}';
     controller.locationController.text = location;
+    controller.isLocationEnabled.value = true;
   }
 
   @override
@@ -85,18 +86,33 @@ class SearchAvailabilityPage extends StatelessWidget {
                               controller: controller.locationController,
                               decoration: const InputDecoration(
                                   labelText: 'Location',
-                                  hintText: "Berdasarkan Lokasi Sekarang"),
+                                  hintText: "Current Location"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
-                                      'Kolom Tidak Boleh Kosong';
-                                  return 'Kolom Tidak Boleh Kosong';
+                                      'This Field Must Be Filled !';
+                                  return 'This Field Must Be Filled !';
                                 }
                                 errorMessage.value = "";
                                 return null;
                               },
                             ),
                           ),
+                        ),
+                        Row(
+                          children: [
+                            Obx(
+                              () => Radio(
+                                value: false,
+                                groupValue: controller.isLocationEnabled.value,
+                                onChanged: (value) {
+                                  controller
+                                      .toggleNearestLocation(value as bool);
+                                },
+                              ),
+                            ),
+                            const Text('Around Circuit'),
+                          ],
                         ),
                         GestureDetector(
                           onTap: () {
@@ -108,12 +124,12 @@ class SearchAvailabilityPage extends StatelessWidget {
                               controller: controller.checkInDateController,
                               decoration: const InputDecoration(
                                   labelText: 'Check-In Date',
-                                  hintText: "Tanggal Masuk Ke Kamar Hotel"),
+                                  hintText: "Check-in Date From Hotel"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
-                                      'Kolom Tidak Boleh Kosong';
-                                  return 'Kolom Tidak Boleh Kosong';
+                                      'This Field Must Be Filled !';
+                                  return 'This Field Must Be Filled !';
                                 }
                                 errorMessage.value = "";
                                 return null;
@@ -133,12 +149,12 @@ class SearchAvailabilityPage extends StatelessWidget {
                               controller: controller.checkOutDateController,
                               decoration: const InputDecoration(
                                   labelText: 'Check-Out Date',
-                                  hintText: "Tanggal Keluar Dari Hotel"),
+                                  hintText: "Check-Out Date From Hotel"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
-                                      'Kolom Tidak Boleh Kosong';
-                                  return 'Kolom Tidak Boleh Kosong';
+                                      'This Field Must Be Filled !';
+                                  return 'This Field Must Be Filled !';
                                 }
                                 errorMessage.value = "";
                                 return null;
@@ -154,18 +170,18 @@ class SearchAvailabilityPage extends StatelessWidget {
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                   labelText: 'Min Rate',
-                                  hintText: "Harga Terendah Dari Hotel"),
+                                  hintText: "Minimum Price For Hotel"),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   errorMessage.value =
-                                      'Kolom Tidak Boleh Kosong';
-                                  return 'Kolom Tidak Boleh Kosong';
+                                      'This Field Must Be Filled !';
+                                  return 'This Field Must Be Filled !';
                                 }
                                 int quantity = int.parse(value);
                                 if (quantity < 100000) {
                                   errorMessage.value =
-                                      'Harga Terendah Adalah 100.000';
-                                  return 'Harga Terendah Adalah 100.000';
+                                      'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
+                                  return 'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
                                 }
                                 errorMessage.value = "";
                                 return null;
@@ -180,18 +196,18 @@ class SearchAvailabilityPage extends StatelessWidget {
                                   keyboardType: TextInputType.number,
                                   decoration: const InputDecoration(
                                       labelText: 'Max Rate',
-                                      hintText: "Harga Tertinggi Dari Hotel"),
+                                      hintText: "Maximum Price For Hotel"),
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       errorMessage.value =
-                                          'Kolom Tidak Boleh Kosong';
-                                      return 'Kolom Tidak Boleh Kosong';
+                                          'This Field Must Be Filled !';
+                                      return 'This Field Must Be Filled !';
                                     }
                                     int quantity = int.parse(value);
                                     if (quantity < 250000) {
                                       errorMessage.value =
-                                          'Harga Terendah Adalah 100.000';
-                                      return 'Harga Terendah Adalah 100.000';
+                                          'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
+                                      return 'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
                                     }
                                     errorMessage.value = "";
                                     return null;
@@ -201,97 +217,54 @@ class SearchAvailabilityPage extends StatelessWidget {
                             )
                           ],
                         ),
+                        const SizedBox(height: 20),
                         Row(
                           children: [
-                            Expanded(
-                                child: TextFormField(
-                              controller: controller.minCategoryController,
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                  labelText: 'Min Star',
-                                  hintText: "Minimal Bintang Hotel (min : 1)"),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  errorMessage.value =
-                                      'Kolom Tidak Boleh Kosong';
-                                  return 'Kolom Tidak Boleh Kosong';
-                                }
-                                int quantity = int.parse(value);
-                                if (quantity < 1 || quantity > 5) {
-                                  errorMessage.value =
-                                      'Masukkan Angka Antara 1-5';
-                                  return 'Masukkan Angka Antara 1-5';
-                                }
-                                errorMessage.value = "";
-                                return null;
-                              },
-                            )),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: TextFormField(
-                                  controller: controller.maxCategoryController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                      labelText: 'Min Star',
-                                      hintText:
-                                          "Maksimal Bintang Hotel (mak : 5)"),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      errorMessage.value =
-                                          'Kolom Tidak Boleh Kosong';
-                                      return 'Kolom Tidak Boleh Kosong';
-                                    }
-                                    int quantity = int.parse(value);
-                                    if (quantity < 1 || quantity > 5) {
-                                      errorMessage.value =
-                                          'Masukkan Angka Antara 1-5';
-                                      return 'Masukkan Angka Antara 1-5';
-                                    }
-                                    errorMessage.value = "";
-                                    return null;
-                                  },
-                                ),
+                            Obx(
+                              () => Text(
+                                'Stars: ${controller.minStar.value.round()} - ${controller.maxStar.value.round()}',
                               ),
-                            )
+                            ),
                           ],
                         ),
-                        TextFormField(
-                          controller: controller.roomFieldController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: 'Room',
-                              hintText: "Jumlah Room Yang Dipesan"),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              errorMessage.value = 'Kolom Tidak Boleh Kosong';
-                              return 'Kolom Tidak Boleh Kosong';
-                            }
-                            int quantity = int.parse(value);
-                            if (quantity < 1) {
-                              errorMessage.value =
-                                  'Ruangan Tidak Bisa Bernilai 0';
-                              return 'Ruangan Tidak Bisa Bernilai 0';
-                            }
-                            errorMessage.value = "";
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: controller.adultFieldController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: 'Adult',
-                              hintText: "Jumlah Orang Dewasa Pada 1 Kamar"),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              errorMessage.value = 'Kolom Tidak Boleh Kosong';
-                              return 'Kolom Tidak Boleh Kosong';
-                            }
-                            errorMessage.value = "";
-                            return null;
-                          },
+                        const SizedBox(height: 40),
+                        Container(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width, // Mengatur lebar Container sesuai lebar layar
+                          padding: const EdgeInsets.only(
+                              left: 5,
+                              right: 20,
+                              top:
+                                  10), // Memberikan padding horizontal jika diperlukan
+                          child: RangeSliderFlutter(
+                            // Properti-properti lain dari RangeSliderFlutter
+                            values: [
+                              controller.minStar.value,
+                              controller.maxStar.value
+                            ],
+                            rangeSlider: true,
+                            tooltip: RangeSliderFlutterTooltip(
+                              alwaysShowTooltip: true,
+                            ),
+                            max: 5,
+                            handlerHeight: 10,
+                            trackBar: RangeSliderFlutterTrackBar(
+                              activeTrackBarHeight: 5,
+                              inactiveTrackBarHeight: 5,
+                              activeTrackBar: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.red,
+                              ),
+                            ),
+                            min: 1,
+                            fontSize: 11,
+                            textBackgroundColor: Colors.red,
+                            onDragging: (handlerIndex, lowerValue, upperValue) {
+                              controller
+                                  .updateRangeValues([lowerValue, upperValue]);
+                            },
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 15),
@@ -304,7 +277,7 @@ class SearchAvailabilityPage extends StatelessWidget {
                                       await controller.fetchAvailability();
                                     } else {
                                       errorMessage.value =
-                                          "Isi Kolom Yang Dibutuhkan !";
+                                          "Please, Fill The Necessary Fields !";
                                     }
                                   },
                                   child: const Text('Submit'),
@@ -342,7 +315,7 @@ class SearchAvailabilityPage extends StatelessWidget {
                               Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  'Mohon tunggu, kami lagi carikan hotel',
+                                  'Please Wait ...',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16.0,

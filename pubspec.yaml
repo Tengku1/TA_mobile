@@ -28,6 +28,10 @@ dependencies:
   url_launcher: ^6.1.11
   printing: ^5.11.0
   banner_carousel: ^1.2.1
+  range_slider_flutter: ^0.0.2
+  carousel_slider: ^4.2.1
+  google_maps_flutter: ^2.3.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

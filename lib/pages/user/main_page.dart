@@ -16,7 +16,6 @@ class ProfilePage extends StatelessWidget {
         Get.offNamed('/login');
       });
     }
-    print(authController.usersData);
 
     return Scaffold(
         appBar: AppBar(
@@ -28,33 +27,40 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Name: ${authController.usersData['name']}',
-                  style: const TextStyle(fontSize: 20),
+                TextFormField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                      labelText: "${authController.usersData['name']}",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
-                Text(
-                  'Surname: ${authController.usersData['surname']}',
-                  style: const TextStyle(fontSize: 20),
+                const SizedBox(height: 10),
+                TextFormField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                      labelText: "${authController.usersData['surname']}",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                      labelText: "${authController.usersData['email']}",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                      labelText: "${authController.usersData['telephone']}",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Email: ${authController.usersData['email']}',
-                  style: const TextStyle(fontSize: 20),
-                ),
-                Text(
-                  'Telephone: ${authController.usersData['telephone']}',
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () {
-                    // Tambahkan logika update profil di sini
-                    Get.snackbar('Update Profil', 'Profil telah diperbarui');
-                  },
-                  child: const Text('Update Profil'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     authController.usersData.clear();
                     Get.snackbar('Logout', 'Anda telah logout');

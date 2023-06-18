@@ -76,7 +76,7 @@ class LoginPage extends StatelessWidget {
                                             onPressed: () async {
                                               if (formKey.currentState!
                                                   .validate()) {
-                                                controller.login();
+                                                await controller.login();
                                               } else {
                                                 errorMessage.value =
                                                     "Isi Kolom Yang Dibutuhkan !";
