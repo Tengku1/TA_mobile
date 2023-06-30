@@ -1,4 +1,5 @@
 import 'package:mobile_ta/pages/Search_Availability_Page/main_page.dart';
+import 'package:mobile_ta/pages/auth/auth_middleware.dart';
 import 'package:mobile_ta/pages/auth/login_page.dart';
 import 'package:mobile_ta/pages/home/home_page.dart';
 import 'package:mobile_ta/pages/auth/register_page.dart';
@@ -14,8 +15,15 @@ class AppRoutes {
     GetPage(name: RoutePaths.LOGIN_FORM, page: () => LoginPage()),
     GetPage(
         name: RoutePaths.HOTEL_AVAILABILITY_FORM,
-        page: () => SearchAvailabilityPage()),
-    GetPage(name: RoutePaths.MY_ORDER, page: () => ListHotelOrder()),
-    GetPage(name: RoutePaths.PROFILE, page: () => ProfilePage()),
+        page: () => SearchAvailabilityPage(),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: RoutePaths.MY_ORDER,
+        page: () => ListHotelOrder(),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: RoutePaths.PROFILE,
+        page: () => ProfilePage(),
+        middlewares: [AuthMiddleware()]),
   ];
 }

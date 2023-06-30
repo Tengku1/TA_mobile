@@ -14,6 +14,7 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
   final ip = "http://192.168.18.7:3000";
   final usersData = {}.obs;
+  final isLogggIn = false.obs;
 
   void resetForm() {
     nameController.text = "";
@@ -41,7 +42,8 @@ class AuthController extends GetxController {
         return;
       }
       usersData.value = responseData;
-      return Get.toNamed("/");
+      isLogggIn.value = true;
+      return Get.offAllNamed("/");
     } catch (e) {
       return Get.to(() => ErrorScreen(
             headMessage: "Error",
