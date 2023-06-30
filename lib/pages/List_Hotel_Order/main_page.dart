@@ -77,57 +77,77 @@ class ListHotelOrder extends StatelessWidget {
                     final hotel = data[index];
                     final images = hotel['image'];
 
-                    return GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 5.0),
-                        child: Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (images.isNotEmpty)
-                                Image.network(
-                                  '$images',
-                                  width: double.infinity,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
-                              const SizedBox(height: 10),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 15.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      hotel['hotel'][0]['name'],
-                                      style: const TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Check-In : ${hotel['hotel'][0]['check_in']}',
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                    Text(
-                                      'Check-Out : ${hotel['hotel'][0]['check_out']}',
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                    Text(
-                                      'Payment Status : ${hotel['status']}',
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (images.isNotEmpty)
+                              Image.network(
+                                '$images',
+                                width: double.infinity,
+                                height: 200,
+                                fit: BoxFit.cover,
                               ),
-                            ],
-                          ),
+                            const SizedBox(height: 10),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    hotel['hotel'][0]['name'],
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Check-In : ${hotel['hotel'][0]['check_in']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  Text(
+                                    'Check-Out : ${hotel['hotel'][0]['check_out']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  Text(
+                                    'Payment Status : ${hotel['status']}',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  hotel['status'] == 'PENDING'
+                                      ? Row(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {},
+                                              child: const Text(
+                                                'Go To Payment',
+                                                style: TextStyle(fontSize: 14),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            ElevatedButton(
+                                              onPressed: () {},
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red),
+                                              child: const Text(
+                                                'Cancel',
+                                                style: TextStyle(fontSize: 14),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : const SizedBox(height: 0)
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
