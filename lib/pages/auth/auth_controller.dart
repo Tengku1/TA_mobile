@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_ta/configs/api_config.dart';
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
-import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   final nameController = TextEditingController();
@@ -25,23 +23,19 @@ class AuthController extends GetxController {
   }
 
   Future<void> login() async {
-    final url = Uri.parse('$ip/hotels/login');
     final data = {
       'email': emailController.text,
       'password': pwdController.text
     };
 
     try {
-      final response = await http.post(url,
-          body: jsonEncode(data),
-          headers: {'Content-Type': 'application/json'});
+      final response = await postReq("login", data);
 
-      final responseData = jsonDecode(response.body);
-      if (responseData['statusCode'] == 400) {
+      if (response['statusCode'] == 400) {
         Get.snackbar('Warning', 'Account Not Found');
         return;
       }
-      usersData.value = responseData;
+      usersData.value = response;
       isLogggIn.value = true;
       return Get.offAllNamed("/");
     } catch (e) {
@@ -53,7 +47,6 @@ class AuthController extends GetxController {
   }
 
   Future<void> register() async {
-    final url = Uri.parse('$ip/hotels/register');
     final data = {
       'email': emailController.text,
       'password': pwdController.text,
@@ -66,12 +59,8 @@ class AuthController extends GetxController {
       if (usersData.isNotEmpty) {
         return Get.offAllNamed("/");
       }
-      final response = await http.post(url,
-          body: jsonEncode(data),
-          headers: {'Content-Type': 'application/json'});
-
-      final responseData = jsonDecode(response.body);
-      usersData.value = responseData;
+      final response = await postReq("register", data);
+      usersData.value = response;
       Get.offAndToNamed("/");
     } catch (e) {
       return Get.to(() => ErrorScreen(

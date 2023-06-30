@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_ta/configs/api_config.dart';
 
 import 'package:mobile_ta/pages/Hotel_Lists/main_page.dart';
 import 'package:mobile_ta/utils/currency_format.dart';
@@ -19,7 +20,6 @@ class SearchAvailabilityController extends GetxController {
   var latitude = 0.0;
   var longitude = 0.0;
   var isLoading = false.obs;
-  final ip = "http://192.168.18.7:3000";
   var minStar = 1.0.obs;
   var maxStar = 5.0.obs;
 
@@ -31,6 +31,25 @@ class SearchAvailabilityController extends GetxController {
   void updateLocation(Position position) {
     latitude = double.parse(position.latitude.toString());
     longitude = double.parse(position.longitude.toString());
+  }
+
+  bool isCheckOutMoreThan30Days() {
+    DateTime checkInDate = DateTime.parse(checkInDateController.text);
+    DateTime checkOutDate = DateTime.parse(checkOutDateController.text);
+
+    Duration difference = checkOutDate.difference(checkInDate);
+
+    if (difference.inDays > 30) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void resetForm() {
+    locationController.text = "";
+    checkInDateController.text = "";
+    checkOutDateController.text = "";
   }
 
   Future<void> toggleNearestLocation(bool value) async {
@@ -45,30 +64,7 @@ class SearchAvailabilityController extends GetxController {
         '${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea}';
   }
 
-  bool isCheckOutMoreThan30Days() {
-    DateTime checkInDate = DateTime.parse(checkInDateController.text);
-    DateTime checkOutDate = DateTime.parse(checkOutDateController.text);
-
-    // Menghitung selisih antara dua tanggal
-    Duration difference = checkOutDate.difference(checkInDate);
-
-    // Memeriksa apakah selisih lebih dari 30 hari
-    if (difference.inDays > 30) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void resetForm() {
-    locationController.text = "";
-    checkInDateController.text = "";
-    checkOutDateController.text = "";
-  }
-
   Future<void> fetchAvailability() async {
-    final url = Uri.parse('$ip/hotels/bookings/availability');
-
     final stay = {
       'checkIn': checkInDateController.text,
       'checkOut': checkOutDateController.text,
@@ -108,19 +104,12 @@ class SearchAvailabilityController extends GetxController {
 
     try {
       isLoading.value = true;
-      final response = await http.post(
-        url,
-        body: jsonEncode(data),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      final availabilityHotel = jsonDecode(response.body);
+      final availabilityHotel = await postReq('bookings/availability', data);
       List<dynamic> hotelDetails = [];
 
       for (var hotel in availabilityHotel) {
         final id = hotel['code'];
-        final url = Uri.parse('$ip/hotels/$id?language=IND');
-        final detailResponse = await http.get(url);
+        final detailResponse = await getReq("$id?language=IND");
         final minRate =
             CurrencyFormat.convertToIdr(double.parse(hotel['minRate']));
         final maxRate =
@@ -158,10 +147,8 @@ class SearchAvailabilityController extends GetxController {
 
   @override
   void onClose() {
-    locationController.dispose();
     checkInDateController.dispose();
     checkOutDateController.dispose();
-    minRateController.dispose();
     super.onClose();
   }
 }

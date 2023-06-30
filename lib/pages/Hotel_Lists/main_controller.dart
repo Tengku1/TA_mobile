@@ -1,13 +1,10 @@
 import 'package:get/get.dart';
 import 'package:mobile_ta/pages/Hotel_Rooms_List/main_page.dart';
-// import 'package:mobile_ta/pages/Hotel_Rooms_List/main_page.dart';
-// import 'package:http/http.dart' as http;
 
 class HotelListsController extends GetxController {
   final RxList<dynamic> hotels = <dynamic>[].obs;
   final sortByRate = true.obs;
   final sortByPrice = true.obs;
-  final ip = "http://192.168.18.7:3000";
 
   sortByRatePressed(List hotels) {
     hotels.sort((a, b) => a['category']['description']['content']

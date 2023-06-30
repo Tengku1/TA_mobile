@@ -149,6 +149,7 @@ class HomePage extends StatelessWidget {
                               height: 200,
                               fit: BoxFit.cover,
                             ),
+                            const SizedBox(height: 10),
                             const Text(
                                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sit amet risus risus. Aenean aliquam sapien purus, in accumsan mauris ultrices in."),
                           ],

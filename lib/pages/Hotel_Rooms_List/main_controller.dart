@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:mobile_ta/configs/api_config.dart';
 import 'package:mobile_ta/pages/Hotel_Payment_Method_Page/main_page.dart';
 import 'package:mobile_ta/pages/auth/auth_controller.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class HotelRoomController extends GetxController {
   final RxList<dynamic> hotels = <dynamic>[].obs;
   final sortByPrice = true.obs;
-  final ip = "http://192.168.18.7:3000";
   TextEditingController remarksController = TextEditingController();
   final authController = Get.put(AuthController());
 
@@ -24,7 +23,6 @@ class HotelRoomController extends GetxController {
   }
 
   Future<void> goToPaymentPage(room, List bookData) async {
-    final url = Uri.parse('$ip/hotels/bookings/database');
     final book = bookData[0];
     final holder = {
       "name": authController.usersData['name'],
@@ -78,18 +76,13 @@ class HotelRoomController extends GetxController {
     };
 
     try {
-      final response = await http.post(
-        url,
-        body: jsonEncode(data),
-        headers: {'Content-Type': 'application/json'},
-      );
-      final responseData = jsonDecode(response.body);
+      final responseData = await postReq("bookings/database", data);
       final ids = [
         responseData['bookId'],
         responseData['bookHotelId'],
       ];
 
-      if (response.statusCode == 201) {
+      if (responseData.statusCode == 201) {
         Get.to(() => PaymentMethodsPage(room: room, ids: ids));
       }
     } catch (e) {
