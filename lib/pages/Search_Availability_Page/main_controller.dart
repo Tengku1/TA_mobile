@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile_ta/configs/api_config.dart';
 
 import 'package:mobile_ta/pages/Hotel_Lists/main_page.dart';
