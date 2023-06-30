@@ -21,7 +21,6 @@ class ListHotelOrder extends StatelessWidget {
       );
       final responseData = jsonDecode(response.body);
       data.value = responseData;
-      print(data[0]);
     } catch (e) {
       Get.to(() => const ErrorScreen(
             headMessage: "Kesalahan Server",
