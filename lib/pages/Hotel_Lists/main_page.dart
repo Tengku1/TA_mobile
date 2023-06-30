@@ -13,10 +13,7 @@ class HotelListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     final RxInt visibleItemCount = 10.obs;
-    List<dynamic> sortedHotels = [];
     final controller = Get.put(HotelListsController());
-    final listLength =
-        sortedHotels.isEmpty ? hotels.length : sortedHotels.length;
 
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
@@ -44,11 +41,9 @@ class HotelListPage extends StatelessWidget {
                     onPressed: () {
                       controller.sortByRate.value =
                           !controller.sortByRate.value;
-                      if (controller.sortByPrice.value == true) {
-                        controller.sortByPrice.value =
-                            !controller.sortByPrice.value;
+                      if (controller.sortByPrice.value) {
+                        controller.sortByPrice.value = false;
                       }
-                      sortedHotels = controller.sortByRatePressed(hotels);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -65,11 +60,9 @@ class HotelListPage extends StatelessWidget {
                     onPressed: () {
                       controller.sortByPrice.value =
                           !controller.sortByPrice.value;
-                      if (controller.sortByRate.value == true) {
-                        controller.sortByRate.value =
-                            !controller.sortByRate.value;
+                      if (controller.sortByRate.value) {
+                        controller.sortByRate.value = false;
                       }
-                      sortedHotels = controller.sortByPricePressed(hotels);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -85,76 +78,82 @@ class HotelListPage extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: Obx(() => ListView.builder(
-                      controller: scrollController,
-                      itemCount: visibleItemCount.value < listLength
-                          ? visibleItemCount.value + 1
-                          : listLength,
-                      itemBuilder: (context, index) {
-                        if (index == visibleItemCount.value) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        final hotel = sortedHotels.isEmpty
-                            ? hotels[index]
-                            : sortedHotels[index];
-                        final List<dynamic> images = hotel['images'];
-                        final String imagePath =
-                            images.isNotEmpty ? images[0]['path'] : '';
+              child: Obx(
+                () {
+                  List<dynamic> sortedHotels = controller.sortHotels(hotels);
+                  return ListView.builder(
+                    controller: scrollController,
+                    itemCount: visibleItemCount.value < sortedHotels.length
+                        ? visibleItemCount.value + 1
+                        : sortedHotels.length,
+                    itemBuilder: (context, index) {
+                      if (index == visibleItemCount.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      final hotel = sortedHotels[index];
+                      final List<dynamic> images = hotel['images'];
+                      final String imagePath =
+                          images.isNotEmpty ? images[0]['path'] : '';
 
-                        return GestureDetector(
-                          onTap: () {
-                            Get.to(() => HotelDetailPage(hotel: hotel));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 5.0),
-                            child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (imagePath.isNotEmpty)
-                                    Image.network(
-                                      'http://photos.hotelbeds.com/giata/bigger/$imagePath',
-                                      width: double.infinity,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 15.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          hotel['name']['content'],
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                            '${hotel['zone']['name']}, ${hotel['destination']['name']['content']}'),
-                                        Text(
-                                            'Type: ${hotel['category']['description']['content']}'),
-                                        Text(
-                                            'Price: ${hotel['minRate']} - ${hotel['maxRate']} /night(s)'),
-                                      ],
-                                    ),
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(() => HotelDetailPage(hotel: hotel));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: 5.0,
+                          ),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (imagePath.isNotEmpty)
+                                  Image.network(
+                                    'http://photos.hotelbeds.com/giata/bigger/$imagePath',
+                                    width: double.infinity,
+                                    height: 180,
+                                    fit: BoxFit.cover,
                                   ),
-                                ],
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        hotel['name']['content'],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                          '${hotel['zone']['name']}, ${hotel['destination']['name']['content']}'),
+                                      Text(
+                                          'Type: ${hotel['category']['description']['content']}'),
+                                      Text(
+                                          'Price: ${hotel['minRate']} - ${hotel['maxRate']} /night(s)'),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    )))
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
