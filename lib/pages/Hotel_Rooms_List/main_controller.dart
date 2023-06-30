@@ -74,13 +74,13 @@ class HotelRoomController extends GetxController {
     };
 
     try {
-      final responseData = await postReq("bookings/database", data);
+      final response = await postReq("bookings/database", data);
       final ids = [
-        responseData['bookId'],
-        responseData['bookHotelId'],
+        response['bookId'],
+        response['bookHotelId'],
       ];
 
-      if (responseData.statusCode == 201) {
+      if (response['statusCode'] == 201) {
         Get.to(() => PaymentMethodsPage(room: room, ids: ids));
       }
     } catch (e) {
