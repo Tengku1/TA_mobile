@@ -3,7 +3,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-import 'initial_binding.dart';
 import 'routes/route_paths.dart';
 import 'routes/routes.dart';
 
@@ -24,7 +23,6 @@ Future<void> main() async {
         locale: Get.deviceLocale,
         defaultTransition: Transition.native,
         initialRoute: RoutePaths.INITIAL,
-        initialBinding: InitialBinding(),
         getPages: AppRoutes.getRoutes,
       ),
     ),
