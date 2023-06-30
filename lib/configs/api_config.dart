@@ -28,7 +28,7 @@ Future<dynamic> getReq(String endpoint) async {
       headers: {'Content-Type': 'application/json'},
     );
 
-    return jsonDecode(response.body);
+    return response;
   } catch (e) {
     throw Exception('Error: $e');
   }
