@@ -30,7 +30,7 @@ class HotelRoomsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hotel List'),
+        title: const Text('Room List'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -152,7 +152,7 @@ class RoomDetailPage extends StatelessWidget {
     final controller = Get.put(HotelRoomController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hotel Detail'),
+        title: const Text('Room Detail'),
       ),
       body: SingleChildScrollView(
         child: Column(

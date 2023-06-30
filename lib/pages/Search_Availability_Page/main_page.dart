@@ -180,8 +180,8 @@ class SearchAvailabilityPage extends StatelessWidget {
                                 int quantity = int.parse(value);
                                 if (quantity < 100000) {
                                   errorMessage.value =
-                                      'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
-                                  return 'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
+                                      'Minimum Price Is 100.000';
+                                  return 'Minimum Price Is 100.000';
                                 }
                                 errorMessage.value = "";
                                 return null;
@@ -206,8 +206,8 @@ class SearchAvailabilityPage extends StatelessWidget {
                                     int quantity = int.parse(value);
                                     if (quantity < 250000) {
                                       errorMessage.value =
-                                          'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
-                                      return 'Minimum Price For The Hotel Is IDR. 100.000 / \$10';
+                                          'Minimum Price Is 100.000';
+                                      return 'Minimum Price Is 100.000';
                                     }
                                     errorMessage.value = "";
                                     return null;
