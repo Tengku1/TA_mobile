@@ -63,6 +63,7 @@ class ProfilePage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     authController.usersData.clear();
+                    authController.isLogggIn.value = false;
                     Get.snackbar('Logout', 'Anda telah logout');
                     Get.offNamed("/");
                   },

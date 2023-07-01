@@ -144,14 +144,16 @@ class HomePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Image.network(
-                              "https://img.freepik.com/free-vector/covid-19-corona-virus-updates-news-banner-design_1017-24525.jpg",
+                              "https://img.okezone.com/okz/400/content/2023/06/30/38/2839396/bos-repsol-honda-buka-bukaan-soal-ketidakpuasannya-dengan-kiprah-marc-marquez-dkk-di-motogp-2023-hDF3BSYkHA.jpg",
                               width: double.infinity,
                               height: 200,
                               fit: BoxFit.cover,
                             ),
                             const SizedBox(height: 10),
                             const Text(
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sit amet risus risus. Aenean aliquam sapien purus, in accumsan mauris ultrices in."),
+                              "Bos Repsol terang-terangan perasaan ketidakpuasannya dengan kiprah Marc Marquez dan kolega di MotoGP 2023",
+                              style: TextStyle(fontSize: 12),
+                            ),
                           ],
                         ),
                       ),

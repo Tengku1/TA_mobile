@@ -2,23 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_ta/configs/api_config.dart';
 import 'package:mobile_ta/main_controller.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class ListHotelOrder extends StatelessWidget {
   ListHotelOrder({Key? key}) : super(key: key);
   final controller = Get.put(MainController());
-  final ip = "http://192.168.18.7:3000";
   final data = [].obs;
 
   void fetchData() async {
-    final url = Uri.parse('$ip/hotels/bookings/lists');
     try {
-      final response = await http.get(
-        url,
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await getReq("bookings/lists");
       final responseData = jsonDecode(response.body);
       data.value = responseData;
     } catch (e) {
@@ -133,7 +128,13 @@ class ListHotelOrder extends StatelessWidget {
                                             ),
                                             const SizedBox(width: 5),
                                             ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () async {
+                                                await deleteReq(
+                                                    "bookings/${hotel['booking_reference_code']}");
+                                                data.refresh();
+                                                Get.snackbar('Success',
+                                                    'Booking cancelled successfully');
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.red),
                                               child: const Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_ta/configs/api_config.dart';
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
+import 'dart:convert';
 
 class AuthController extends GetxController {
   final nameController = TextEditingController();
@@ -10,7 +11,6 @@ class AuthController extends GetxController {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   var isLoading = false.obs;
-  final ip = "http://192.168.18.7:3000";
   final usersData = {}.obs;
   final isLogggIn = false.obs;
 
@@ -30,12 +30,13 @@ class AuthController extends GetxController {
 
     try {
       final response = await postReq("login", data);
+      final responseData = jsonDecode(response.body);
 
-      if (response['statusCode'] == 400) {
+      if (response.statusCode == 400) {
         Get.snackbar('Warning', 'Account Not Found');
         return;
       }
-      usersData.value = response;
+      usersData.value = responseData;
       isLogggIn.value = true;
       return Get.offAllNamed("/");
     } catch (e) {

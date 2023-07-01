@@ -103,7 +103,9 @@ class SearchAvailabilityController extends GetxController {
 
     try {
       isLoading.value = true;
-      final availabilityHotel = await postReq('bookings/availability', data);
+      final response = await postReq('bookings/availability', data);
+
+      final availabilityHotel = jsonDecode(response.body);
       List<dynamic> hotelDetails = [];
 
       for (var hotel in availabilityHotel) {

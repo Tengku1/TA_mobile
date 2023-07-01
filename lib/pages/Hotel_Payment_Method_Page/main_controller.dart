@@ -9,7 +9,6 @@ import 'package:mobile_ta/widgets/widget_error_screen.dart';
 class PaymentController extends GetxController {
   var selectedPaymentMethod = 'Transfer Bank Mandiri'.obs;
   var selectedPaymentType = 'BCA'.obs;
-  final ip = "http://192.168.18.7:3000";
 
   void setSelectedPaymentMethod(
       String paymentMethod, String paymentMethodType) {

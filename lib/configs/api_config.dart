@@ -13,7 +13,7 @@ Future<dynamic> postReq(String endpoint, dynamic data) async {
       headers: {'Content-Type': 'application/json'},
     );
 
-    return jsonDecode(response.body);
+    return response;
   } catch (e) {
     throw Exception('Error: $e');
   }

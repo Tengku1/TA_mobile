@@ -3,8 +3,8 @@ import 'package:mobile_ta/pages/Hotel_Rooms_List/main_page.dart';
 
 class HotelListsController extends GetxController {
   final RxList<dynamic> hotels = <dynamic>[].obs;
-  final RxBool sortByRate = true.obs;
-  final RxBool sortByPrice = true.obs;
+  final sortByRate = true.obs;
+  final sortByPrice = true.obs;
 
   List<dynamic> sortHotels(List hotels) {
     List<dynamic> sortedHotels = [...hotels];
@@ -22,14 +22,14 @@ class HotelListsController extends GetxController {
       });
     } else if (sortByPrice.value) {
       sortedHotels.sort((a, b) {
-        final aMinRate = a['minRate'];
-        final bMinRate = b['minRate'];
+        final firstPrice = a['minRate'];
+        final secondPrice = b['minRate'];
+        final aMinRate =
+            int.parse(firstPrice.replaceAll(RegExp(r'[^0-9]'), ''));
+        final bMinRate =
+            int.parse(secondPrice.replaceAll(RegExp(r'[^0-9]'), ''));
 
-        if (aMinRate is num && bMinRate is num) {
-          return aMinRate.compareTo(bMinRate);
-        } else {
-          return 0;
-        }
+        return aMinRate.compareTo(bMinRate);
       });
     }
 
@@ -60,8 +60,8 @@ class HotelListsController extends GetxController {
     imageList.sort((a, b) => a['roomCode'].compareTo(b['roomCode']));
     for (var room in sortedRooms) {
       roomList.add({"images": getRoomImage(imageList, room), ...room});
-      Get.to(() => HotelRoomsPage(roomList: roomList, bookData: bookData));
     }
+    Get.to(() => HotelRoomsPage(roomList: roomList, bookData: bookData));
   }
 
   getRoomImage(List images, room) {

@@ -15,9 +15,6 @@ class HotelRoomsPage extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
     final RxInt visibleItemCount = 5.obs;
     final controller = Get.put(HotelRoomController());
-    List<dynamic> sortedHotels = [];
-    final listLength =
-        sortedHotels.isEmpty ? roomList.length : sortedHotels.length;
 
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
@@ -30,43 +27,49 @@ class HotelRoomsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Room List'),
+        title: const Text('Hotel List'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 23),
-            child: Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    controller.sortByPrice.value =
-                        !controller.sortByPrice.value;
-                    sortedHotels = controller.sortByPricePressed(roomList);
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 23),
+              child: Row(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      controller.sortByPrice.value =
+                          !controller.sortByPrice.value;
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                       ),
                     ),
+                    label: const Text('Price'),
+                    icon: const Icon(Icons.price_change_rounded),
                   ),
-                  label: const Text('Price'),
-                  icon: const Icon(Icons.price_change_rounded),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-              child: Obx(() => ListView.builder(
+            Expanded(
+              child: Obx(
+                () {
+                  List<dynamic> sortedHotels = controller.sortHotels(roomList);
+                  return ListView.builder(
                     controller: scrollController,
-                    itemCount: visibleItemCount.value < listLength
+                    itemCount: visibleItemCount.value < sortedHotels.length
                         ? visibleItemCount.value + 1
-                        : listLength,
+                        : sortedHotels.length,
                     itemBuilder: (context, index) {
                       if (index == visibleItemCount.value) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                       final hotel = sortedHotels.isEmpty
                           ? roomList[index]
@@ -127,8 +130,12 @@ class HotelRoomsPage extends StatelessWidget {
                         ),
                       );
                     },
-                  )))
-        ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

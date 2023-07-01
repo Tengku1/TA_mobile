@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mobile_ta/configs/api_config.dart';
@@ -11,13 +13,21 @@ class HotelRoomController extends GetxController {
   TextEditingController remarksController = TextEditingController();
   final authController = Get.put(AuthController());
 
-  sortByPricePressed(List hotels) {
-    hotels.sort((a, b) => a['minRate'].compareTo(b['minRate']));
-    if (!sortByPrice.value) {
-      hotels = hotels.reversed.toList();
-    }
-    update();
-    return hotels;
+  List<dynamic> sortHotels(List hotels) {
+    List<dynamic> sortedHotels = [...hotels];
+
+    sortedHotels.sort((a, b) {
+      final aMinRate = a['net'];
+      final bMinRate = b['net'];
+
+      if (aMinRate is num && bMinRate is num) {
+        return aMinRate.compareTo(bMinRate);
+      } else {
+        return 0;
+      }
+    });
+
+    return sortedHotels;
   }
 
   Future<void> goToPaymentPage(room, List bookData) async {
@@ -75,12 +85,13 @@ class HotelRoomController extends GetxController {
 
     try {
       final response = await postReq("bookings/database", data);
+      final responseData = jsonDecode(response.body);
       final ids = [
-        response['bookId'],
-        response['bookHotelId'],
+        responseData['bookId'],
+        responseData['bookHotelId'],
       ];
 
-      if (response['statusCode'] == 201) {
+      if (response.statusCode == 201) {
         Get.to(() => PaymentMethodsPage(room: room, ids: ids));
       }
     } catch (e) {
