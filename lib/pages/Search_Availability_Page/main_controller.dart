@@ -7,6 +7,7 @@ import 'package:mobile_ta/configs/api_config.dart';
 
 import 'package:mobile_ta/pages/Hotel_Lists/main_page.dart';
 import 'package:mobile_ta/utils/currency_format.dart';
+import 'package:mobile_ta/utils/distance_latlong.dart';
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class SearchAvailabilityController extends GetxController {
@@ -111,6 +112,11 @@ class SearchAvailabilityController extends GetxController {
       for (var hotel in availabilityHotel) {
         final id = hotel['code'];
         final detailResponse = await getReq("$id?language=IND");
+        final distanceHotel = DistanceCalculator.calculateDistance(
+            latitude,
+            longitude,
+            double.parse(hotel['latitude']),
+            double.parse(hotel['longitude']));
         final minRate =
             CurrencyFormat.convertToIdr(double.parse(hotel['minRate']));
         final maxRate =
@@ -122,6 +128,7 @@ class SearchAvailabilityController extends GetxController {
             "maxRate": maxRate,
             "check_in": stay['checkIn'],
             "check_out": stay['checkOut'],
+            "distance": '$distanceHotel',
             "room_availability": hotel['rooms'],
             ...detailData['hotel']
           });

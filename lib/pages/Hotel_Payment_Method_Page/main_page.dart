@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:mobile_ta/utils/currency_format.dart';
 
 class PaymentMethodsPage extends StatelessWidget {
-  final paymentController = Get.put(PaymentController());
   final controller = Get.put(PaymentController());
   final List ids;
   final dynamic room;
@@ -60,7 +59,7 @@ class PaymentMethodsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              paymentController.selectedPaymentMethod.value,
+                              controller.selectedPaymentMethod.value,
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -136,7 +135,7 @@ class PaymentMethodsPage extends StatelessWidget {
                 title: const Text('Transfer Bank Mandiri'),
                 onTap: () {
                   Get.back();
-                  paymentController.setSelectedPaymentMethod(
+                  controller.setSelectedPaymentMethod(
                       'Transfer Bank Mandiri', 'Mandiri');
                 },
               ),
@@ -144,7 +143,7 @@ class PaymentMethodsPage extends StatelessWidget {
                 title: const Text('Transfer Bank Bca'),
                 onTap: () {
                   Get.back();
-                  paymentController.setSelectedPaymentMethod(
+                  controller.setSelectedPaymentMethod(
                       'Transfer Bank Bca', 'BCA');
                 },
               ),
@@ -152,7 +151,7 @@ class PaymentMethodsPage extends StatelessWidget {
                 title: const Text('Transfer Bank BRI'),
                 onTap: () {
                   Get.back();
-                  paymentController.setSelectedPaymentMethod(
+                  controller.setSelectedPaymentMethod(
                       'Transfer Bank BRI', 'BRI');
                 },
               ),

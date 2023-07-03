@@ -7,8 +7,11 @@ class HotelRoomsPage extends StatelessWidget {
   final List<dynamic> roomList;
   final List<Map<String, dynamic>> bookData;
 
-  const HotelRoomsPage(
-      {super.key, required this.roomList, required this.bookData});
+  const HotelRoomsPage({
+    super.key,
+    required this.roomList,
+    required this.bookData,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +74,8 @@ class HotelRoomsPage extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       }
-                      final hotel = sortedHotels.isEmpty
-                          ? roomList[index]
-                          : sortedHotels[index];
-                      final images = roomList[index]['images'];
+                      final hotel = sortedHotels[index];
+                      final images = hotel['images'];
 
                       return GestureDetector(
                         onTap: () {

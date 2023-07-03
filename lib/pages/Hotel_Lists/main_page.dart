@@ -41,9 +41,8 @@ class HotelListPage extends StatelessWidget {
                     onPressed: () {
                       controller.sortByRate.value =
                           !controller.sortByRate.value;
-                      if (controller.sortByPrice.value) {
-                        controller.sortByPrice.value = false;
-                      }
+                      controller.sortByDistance.value = false;
+                      controller.sortByPrice.value = false;
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -60,9 +59,8 @@ class HotelListPage extends StatelessWidget {
                     onPressed: () {
                       controller.sortByPrice.value =
                           !controller.sortByPrice.value;
-                      if (controller.sortByRate.value) {
-                        controller.sortByRate.value = false;
-                      }
+                      controller.sortByRate.value = false;
+                      controller.sortByDistance.value = false;
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -73,6 +71,24 @@ class HotelListPage extends StatelessWidget {
                     ),
                     label: const Text('Price'),
                     icon: const Icon(Icons.price_change_rounded),
+                  ),
+                  const SizedBox(width: 5),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      controller.sortByDistance.value =
+                          !controller.sortByDistance.value;
+                      controller.sortByRate.value = false;
+                      controller.sortByPrice.value = false;
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                    ),
+                    label: const Text('Distance'),
+                    icon: const Icon(Icons.map_outlined),
                   ),
                 ],
               ),
@@ -141,6 +157,7 @@ class HotelListPage extends StatelessWidget {
                                           'Type: ${hotel['category']['description']['content']}'),
                                       Text(
                                           'Price: ${hotel['minRate']} - ${hotel['maxRate']} /night(s)'),
+                                      Text('Distance: ${hotel['distance']} Km'),
                                     ],
                                   ),
                                 ),

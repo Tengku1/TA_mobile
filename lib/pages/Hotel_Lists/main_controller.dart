@@ -5,6 +5,7 @@ class HotelListsController extends GetxController {
   final RxList<dynamic> hotels = <dynamic>[].obs;
   final sortByRate = true.obs;
   final sortByPrice = true.obs;
+  final sortByDistance = true.obs;
 
   List<dynamic> sortHotels(List hotels) {
     List<dynamic> sortedHotels = [...hotels];
@@ -30,6 +31,13 @@ class HotelListsController extends GetxController {
             int.parse(secondPrice.replaceAll(RegExp(r'[^0-9]'), ''));
 
         return aMinRate.compareTo(bMinRate);
+      });
+    } else if (sortByDistance.value) {
+      sortedHotels.sort((a, b) {
+        final aDistance = a['distance'];
+        final bDistance = b['distance'];
+
+        return aDistance.compareTo(bDistance);
       });
     }
 

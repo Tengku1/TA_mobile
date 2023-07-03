@@ -17,7 +17,7 @@ class PaymentController extends GetxController {
   }
 
   Future<void> confirmBook(List ids) async {
-    final url = Uri.parse('$ip/hotels/bookings');
+    final url = Uri.parse('$ip/bookings');
     final data = {"id": '${ids[1]}', "bookId": '${ids[0]}'};
 
     try {

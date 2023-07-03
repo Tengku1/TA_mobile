@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_ta/configs/api_config.dart';
 import 'package:mobile_ta/main_controller.dart';
+import 'package:mobile_ta/pages/Hotel_Payment_Method_Page/main_page.dart';
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class ListHotelOrder extends StatelessWidget {
@@ -70,6 +71,21 @@ class ListHotelOrder extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                     final hotel = data[index];
+                    final List ids = [
+                      hotel['booking_reference_code'],
+                      hotel['hotel'][0]['id']
+                    ];
+                    final room = {
+                      'rates': [
+                        {
+                          'net': hotel['pending_amount'],
+                          'cancellationPolicies': [
+                            {'from': hotel['cancellationPolicies']}
+                          ],
+                        }
+                      ],
+                      'name': hotel['hotel'][0]['rooms']['roomName'],
+                    };
                     final images = hotel['image'];
 
                     return Padding(
@@ -120,7 +136,10 @@ class ListHotelOrder extends StatelessWidget {
                                       ? Row(
                                           children: [
                                             ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Get.to(() => PaymentMethodsPage(
+                                                    room: room, ids: ids));
+                                              },
                                               child: const Text(
                                                 'Go To Payment',
                                                 style: TextStyle(fontSize: 14),

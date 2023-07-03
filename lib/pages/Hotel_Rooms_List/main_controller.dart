@@ -8,7 +8,6 @@ import 'package:mobile_ta/pages/auth/auth_controller.dart';
 import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class HotelRoomController extends GetxController {
-  final RxList<dynamic> hotels = <dynamic>[].obs;
   final sortByPrice = true.obs;
   TextEditingController remarksController = TextEditingController();
   final authController = Get.put(AuthController());
@@ -17,15 +16,17 @@ class HotelRoomController extends GetxController {
     List<dynamic> sortedHotels = [...hotels];
 
     sortedHotels.sort((a, b) {
-      final aMinRate = a['net'];
-      final bMinRate = b['net'];
+      final firstPrice = a['rates'][0]['net'];
+      final secondPrice = b['rates'][0]['net'];
+      final aMinRate = int.parse(firstPrice.replaceAll(RegExp(r'[^0-9]'), ''));
+      final bMinRate = int.parse(secondPrice.replaceAll(RegExp(r'[^0-9]'), ''));
 
-      if (aMinRate is num && bMinRate is num) {
-        return aMinRate.compareTo(bMinRate);
-      } else {
-        return 0;
-      }
+      return aMinRate.compareTo(bMinRate);
     });
+
+    if (!sortByPrice.value) {
+      sortedHotels = sortedHotels.reversed.toList();
+    }
 
     return sortedHotels;
   }
@@ -80,7 +81,9 @@ class HotelRoomController extends GetxController {
       "remark": remark,
       "pending_amount": pendingAmount,
       "clientReference": "TUGAS_AKHIR",
-      "image": '${book['image']}'
+      "image": '${book['image']}',
+      'cancellationPolicies': room['rates'][0]['cancellationPolicies'][0]
+          ['from'],
     };
 
     try {
