@@ -9,14 +9,20 @@ import 'package:mobile_ta/widgets/widget_error_screen.dart';
 
 class ListHotelOrder extends StatelessWidget {
   ListHotelOrder({Key? key}) : super(key: key);
-  final controller = Get.put(MainController());
-  final data = [].obs;
+  final homeController = Get.put(MainController());
+  final data = RxList<dynamic>([]);
+  final RxInt visibleItemCount = 10.obs;
 
   void fetchData() async {
     try {
-      final response = await getReq("bookings/lists");
+      final response = await getReq("order/lists");
       final responseData = jsonDecode(response.body);
-      data.value = responseData;
+      data.assignAll(responseData);
+      data.listen((_) {
+        if (visibleItemCount.value > data.length) {
+          visibleItemCount.value = data.length;
+        }
+      });
     } catch (e) {
       Get.to(() => const ErrorScreen(
             headMessage: "Kesalahan Server",
@@ -26,10 +32,19 @@ class ListHotelOrder extends StatelessWidget {
     }
   }
 
+  void sortOrders(int index) async {
+    final removedData = await getReq("order/${data[index]['id']}");
+    final orderDetail = jsonDecode(removedData.body);
+    data.removeAt(index);
+    data.insert(0, orderDetail[0]);
+    if (visibleItemCount.value > data.length) {
+      visibleItemCount.value = data.length;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
-    final RxInt visibleItemCount = 10.obs;
     fetchData();
 
     scrollController.addListener(() {
@@ -71,10 +86,8 @@ class ListHotelOrder extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
                     final hotel = data[index];
-                    final List ids = [
-                      hotel['booking_reference_code'],
-                      hotel['hotel'][0]['id']
-                    ];
+                    final List ids = [hotel['id'], hotel['hotel_id']];
+                    final rooms = jsonDecode(hotel['rooms']);
                     final room = {
                       'rates': [
                         {
@@ -84,9 +97,8 @@ class ListHotelOrder extends StatelessWidget {
                           ],
                         }
                       ],
-                      'name': hotel['hotel'][0]['rooms']['roomName'],
+                      'name': rooms['roomName'],
                     };
-                    final images = hotel['image'];
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -99,13 +111,12 @@ class ListHotelOrder extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (images.isNotEmpty)
-                              Image.network(
-                                '$images',
-                                width: double.infinity,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
+                            Image.network(
+                              '${hotel['image']}',
+                              width: double.infinity,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                             const SizedBox(height: 10),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -114,18 +125,18 @@ class ListHotelOrder extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    hotel['hotel'][0]['name'],
+                                    hotel['hotel_name'],
                                     style: const TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Text(
-                                    'Check-In : ${hotel['hotel'][0]['check_in']}',
+                                    'Check-In : ${hotel['check_in']}',
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                   Text(
-                                    'Check-Out : ${hotel['hotel'][0]['check_out']}',
+                                    'Check-Out : ${hotel['check_out']}',
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                   Text(
@@ -139,6 +150,9 @@ class ListHotelOrder extends StatelessWidget {
                                               onPressed: () {
                                                 Get.to(() => PaymentMethodsPage(
                                                     room: room, ids: ids));
+                                                sortOrders(index);
+                                                Get.snackbar('Success',
+                                                    'Booking Confirmation Successfully');
                                               },
                                               child: const Text(
                                                 'Go To Payment',
@@ -149,8 +163,8 @@ class ListHotelOrder extends StatelessWidget {
                                             ElevatedButton(
                                               onPressed: () async {
                                                 await deleteReq(
-                                                    "bookings/${hotel['booking_reference_code']}");
-                                                data.refresh();
+                                                    "bookings/${hotel['id']}");
+                                                sortOrders(index);
                                                 Get.snackbar('Success',
                                                     'Booking cancelled successfully');
                                               },
@@ -176,9 +190,9 @@ class ListHotelOrder extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Obx(() => BottomNavigationBar(
-            currentIndex: controller.selectedIndex.value,
+            currentIndex: homeController.selectedIndex.value,
             selectedItemColor: Colors.blue,
-            onTap: (index) => controller.onTabBtn(index),
+            onTap: (index) => homeController.onTabBtn(index),
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
