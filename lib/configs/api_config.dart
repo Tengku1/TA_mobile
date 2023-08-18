@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+// Atur IPv4 address laptop anda disini
 const String ip = "http://192.168.18.7:3000/hotels";
 
 Future<dynamic> postReq(String endpoint, dynamic data) async {

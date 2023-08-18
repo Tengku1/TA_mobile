@@ -1,16 +1,13 @@
-# mobile_ta
+// Program ini menggunakan flutter version 3.10 ke atas
+// Sebelum menjalankan program ini, pastikan sistem backend sudah dijalankan.
 
-A new Flutter project.
+Instruksi :
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- buka terminal lalu ketik, flutter pub get. Tunggu proses selesai, proses ini menginstall semua kebutuhan aplikasi mobile
+- buka file "api.config.dart" yang berada di folder "lib/configs"
+- atur nilai variabel ip (baris 5) dengan nilai IP address handphone anda sendiri (anda perlu mengatur emulator atau memakai scrcpy seperti perintah dibawah), cukup ubah IP address saja, jangan dihapus /hotels nya.
+- Buatlah dan buka emulator android, atau anda bisa memakai program bernama scrcpy, program ini menjalankan android anda dalam laptop tanpa menghabiskan banyak resource.
+  - link : https://github.com/Genymobile/scrcpy
+  - tutorial : https://www.youtube.com/watch?v=Zk3ewOtxfsE
+- Setelah android atau emulator anda terkoneksi dengan baik, buka kembali terminal anda lalu jalankan "flutter run" tanpa petik. Sistem akan memproses installasi atau build pada perangkat mobile anda.
+- Setelah proses installasi dan running selesai, anda dapat menggunakan aplikasi tersebut.

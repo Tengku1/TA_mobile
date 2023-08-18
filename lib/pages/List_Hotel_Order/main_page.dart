@@ -151,8 +151,6 @@ class ListHotelOrder extends StatelessWidget {
                                                 Get.to(() => PaymentMethodsPage(
                                                     room: room, ids: ids));
                                                 sortOrders(index);
-                                                Get.snackbar('Success',
-                                                    'Booking Confirmation Successfully');
                                               },
                                               child: const Text(
                                                 'Go To Payment',
